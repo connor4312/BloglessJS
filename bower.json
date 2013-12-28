@@ -1,0 +1,24 @@
+{
+  "name": "bloglessjs",
+  "version": "0.0.0",
+  "authors": [
+    "Connor Peet <connor@connorpeet.com>"
+  ],
+  "main": "Gruntfile.js",
+  "license": "MIT",
+  "homepage": "https://github.com/connor4312/BloglessJS",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.2",
+    "requirejs": "~2.1.9",
+    "jquery": "~2.0.3",
+    "handlebars": "~1.2.1"
+  }
+}
