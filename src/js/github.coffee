@@ -26,7 +26,6 @@ define ['jquery'], ($) ->
 				dataType: 'text'
 				headers: 
 					Accept: 'application/vnd.github.VERSION.raw'
-			}).done (data) ->
-				callback data
+			})
 
 	return new Github()
