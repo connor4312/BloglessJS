@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        banner: '/*! Built with Grunt */\n"use strict";',
+        banner: '/*! Built with Grunt */',
         mangle: false,
         compress: false,
         beautify: true
@@ -34,13 +34,19 @@ module.exports = function(grunt) {
           ext: '.js'
         }, {
           src: ['bower_components/jquery/jquery.js'],
-          dest: 'dist/js/jquery.js'
+          dest: 'dist/js/lib/jquery.js'
         }, {
           src: ['bower_components/handlebars/handlebars.js'],
-          dest: 'dist/js/jquery.js'
+          dest: 'dist/js/lib/jquery.js'
         }, {
           src: ['bower_components/requirejs/require.js'],
           dest: 'dist/js/require.js'
+        }, {
+          src: ['bower_components/markdown/lib/markdown.js'],
+          dest: 'dist/js/lib/markdown.js'
+        }, {
+          src: ['bower_components/db.js/src/db.js'],
+          dest: 'dist/js/lib/db.js'
         }]
       }
     },
@@ -59,23 +65,20 @@ module.exports = function(grunt) {
         }]
       }
     },
-    imagemin: {
-      dist: {
+    handlebars: {
+      compile: {
         options: {
-          removeComments: true
+          amd: true
         },
-        files: [{
-          expand: true,
-          cwd: 'src',
-          src: ['**/*.{png,gif}'],
-          dest: 'dist',
-        }]
+        files: {
+          "dist/js/templates.js": "src/templates/*.hbs"
+        }
       }
     },
     concurrent: {
-      build: ['coffee', 'less', 'copy'],
+      build: ['coffee', 'less', 'copy', 'handlebars'],
       postbuild: ['uglify'],
-      watch: ['watch:coffee', 'watch:less']
+      watch: ['watch:coffee', 'watch:less', 'watch:handlebars']
     },
     clean: {
       pre: ['dist'],
@@ -90,9 +93,9 @@ module.exports = function(grunt) {
         files: ['src/css/*.less'],
         tasks: ['less']
       },
-      html: {
-        files: ['src/*.html'],
-        tasks: ['htmlmin']
+      handlebars: {
+        files: ['src/templates/*.hbs'],
+        tasks: ['handlebars']
       },
     },
   });
@@ -104,6 +107,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-handlebars');
 
   grunt.registerTask('default', ['clean:pre', 'concurrent:build', 'concurrent:postbuild', 'clean:post']);
   grunt.registerTask('spy', ['clean:pre', 'concurrent:build', 'concurrent:postbuild', 'clean:post', 'concurrent:watch']);
