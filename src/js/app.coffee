@@ -26,13 +26,12 @@ define ['ember', 'jquery', 'markdown', 'db', 'github', 'underscore'], (Ember, $,
 				finish = _.after 2, callback
 
 				Github.getFileContents(BloglessCfg.username, BloglessCfg.repo, item.path).done (output) =>
-					@addPost item.sha, output
-					finish()
+					@addPost item.sha, output, finish
 
 				@server.files.add(item).done(finish)
 
 
-		addPost: (sha, input) =>
+		addPost: (sha, input, callback) =>
 			# Should probably be ported over to a lexer at some point (regexp)
 			# is evil for HTMLish stuff.
 			metadata = input.match(/(<!--BLOGLESS)(\s+)*(\{[\S\s]+?\})(\s+)(-->)/)[3]
@@ -41,7 +40,7 @@ define ['ember', 'jquery', 'markdown', 'db', 'github', 'underscore'], (Ember, $,
 			data.contents = input
 			data.sha = sha
 
-			@server.posts.add data
+			@server.posts.add(data).done(callback)
 
 
 	return ->

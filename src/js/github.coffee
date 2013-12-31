@@ -14,14 +14,14 @@ define ['jquery'], ($) ->
 
 		getFileList: (username, repo, path = '/') ->
 			return $.ajax({
-				url: @apiUrl + 'repos/' + username + '/' + repo + '/contents' + path
+				url: @apiUrl + 'repos/' + username + '/' + repo + '/contents/' + path.replace(/^\//, '')
 				type: 'GET'
 				dataType: 'json'
 			})
 
 		getFileContents: (username, repo, path = '/', callback) ->
 			$.ajax({
-				url: @apiUrl + 'repos/' + username + '/' + repo + '/contents' + path
+				url: @apiUrl + 'repos/' + username + '/' + repo + '/contents/' + path.replace(/^\//, '')
 				type: 'GET'
 				dataType: 'text'
 				headers: 
