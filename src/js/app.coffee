@@ -17,7 +17,4 @@ define ['ember', 'jquery', 'markdown', 'db', 'github', 'underscore'], (Ember, $,
 				runApp = _.after data.length, makeApplication
 
 				for item in data
-					for key, prop in item
-						delete item.key if _.isObject(prop)
-					debugger;
 					server.files.add(item).done(runApp)
