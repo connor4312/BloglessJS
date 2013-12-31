@@ -7,6 +7,9 @@ define ['dbdotjs'], (db) ->
 				key:
 					keyPath: 'id' 
 					autoIncrement: true
+				indexes:
+					sha:
+						unique: true
 			files:
 				key:
 					keyPath: 'id' 

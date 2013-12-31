@@ -13,26 +13,33 @@ define ['ember', 'jquery', 'markdown', 'db', 'github', 'underscore'], (Ember, $,
 				App.Router.map ->
 					this.route('blogPost', { path: '*:' });
 
-		addFiles: ->
+		loadData: ->
 			Github.getFileList(BloglessCfg.username, BloglessCfg.repo).done (data) =>
 				runApp = _.after data.length, @makeApplication
 
-				for item in data
-					@server.files.query().only('sha', item.sha).execute().done (out) =>
-						debugger;
-						return false if out.length
+				@insertFile(item, runApp) for item in data
 
-						Github.getFileContents(BloglessCfg.username, BloglessCfg.repo, item.path).done @addPost
+		insertFile: (item, callback)->
+			@server.files.query().only('sha', item.sha).execute().done (out) =>
+				return false if out.length
 
-						@server.files.add(item).done(runApp)
+				finish = _.after 2, callback
 
-		addPost: (input) =>
+				Github.getFileContents(BloglessCfg.username, BloglessCfg.repo, item.path).done (output) =>
+					@addPost item.sha, output
+					finish()
+
+				@server.files.add(item).done(finish)
+
+
+		addPost: (sha, input) =>
 			# Should probably be ported over to a lexer at some point (regexp)
 			# is evil for HTMLish stuff.
 			metadata = input.match(/(<!--BLOGLESS)(\s+)*(\{[\S\s]+?\})(\s+)(-->)/)[3]
 
 			data = JSON.parse metadata
 			data.contents = input
+			data.sha = sha
 
 			@server.posts.add data
 
@@ -41,4 +48,4 @@ define ['ember', 'jquery', 'markdown', 'db', 'github', 'underscore'], (Ember, $,
 		blog = new Blogless()
 		db.done (server)->
 			blog.server = server
-			blog.addFiles()
+			blog.loadData()
